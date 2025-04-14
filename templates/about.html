@@ -1,98 +1,109 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}About Semantic Document Search{% endblock %}
+{% block title %}About | Semantic Document Search{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <h1>About Semantic Document Search</h1>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">What is Semantic Document Search?</h5>
-                <p>
-                    Semantic Document Search is a powerful tool that enables you to find documents based on meaning rather than just keywords.
-                    It uses state-of-the-art natural language processing and vector embeddings to understand the content of your documents
-                    and match them with your search intentions.
-                </p>
-                <p>
-                    Unlike traditional search engines that only look for exact word matches, Semantic Document Search
-                    understands concepts and can find relevant documents even when they use different terminology.
-                </p>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <h1 class="mb-4">About</h1>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title h4">Semantic Document Search</h2>
+                    <p class="card-text">
+                        A powerful document search application that uses semantic search to find 
+                        relevant documents based on meaning, not just keywords.
+                    </p>
+                    <p>Version 1.0.0</p>
+                </div>
             </div>
-        </div>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Key Features</h5>
-                
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#0078D4" class="bi bi-search me-2" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                        </svg>
-                        <strong>Natural Language Search</strong>: Ask questions in plain English to find relevant documents
-                    </li>
-                    <li class="list-group-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#107C10" class="bi bi-file-earmark-text me-2" viewBox="0 0 16 16">
-                            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
-                            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
-                        </svg>
-                        <strong>Multi-Format Support</strong>: Index PDF, Word, Excel, and CSV files
-                    </li>
-                    <li class="list-group-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#C4314B" class="bi bi-speedometer2 me-2" viewBox="0 0 16 16">
-                            <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
-                            <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A7.988 7.988 0 0 1 0 10zm8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3z"/>
-                        </svg>
-                        <strong>Fast Searching</strong>: Built on FAISS vector database for efficient retrieval
-                    </li>
-                    <li class="list-group-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#0078D4" class="bi bi-graph-up me-2" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
-                        </svg>
-                        <strong>Relevance Ranking</strong>: Documents are sorted by semantic relevance to your query
-                    </li>
-                    <li class="list-group-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#107C10" class="bi bi-gear me-2" viewBox="0 0 16 16">
-                            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
-                            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
-                        </svg>
-                        <strong>Customizable Settings</strong>: Adjust parameters for optimal search performance
-                    </li>
-                </ul>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">How It Works</h3>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Semantic Document Search uses advanced natural language processing to understand the meaning
+                        behind your search queries and document content.
+                    </p>
+                    
+                    <ol class="mt-3">
+                        <li class="mb-2">
+                            <strong>Document Processing</strong>: When you upload documents, the system extracts text and splits it into 
+                            manageable chunks.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Embedding Generation</strong>: Each chunk is converted into a numerical vector (embedding) that 
+                            represents its semantic meaning.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Vector Indexing</strong>: These embeddings are stored in a FAISS vector database for 
+                            efficient searching.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Semantic Search</strong>: When you search, your query is converted to an embedding and 
+                            compared to document embeddings to find the most semantically similar content.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Results Ranking</strong>: Results are ranked by similarity score, showing the most 
+                            relevant documents first.
+                        </li>
+                    </ol>
+                </div>
             </div>
-        </div>
-        
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Technology</h5>
-                <p>
-                    Semantic Document Search is built on modern technologies:
-                </p>
-                <ul>
-                    <li><strong>FAISS</strong> - Facebook AI Similarity Search for efficient vector retrieval</li>
-                    <li><strong>Sentence Transformers</strong> - State-of-the-art embeddings for text understanding</li>
-                    <li><strong>Flask</strong> - Lightweight web framework for the user interface</li>
-                    <li><strong>Document Processing Libraries</strong> - Tools for extracting text from various document formats</li>
-                </ul>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">Supported File Types</h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="bi bi-file-earmark-pdf text-danger me-3" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>PDF Documents</strong>
+                                <p class="mb-0 text-muted">Extract text from PDF files including reports, papers, and forms</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="bi bi-file-earmark-word text-primary me-3" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>Word Documents</strong>
+                                <p class="mb-0 text-muted">Process DOCX files with formatting preserved</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="bi bi-file-earmark-spreadsheet text-success me-3" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>Excel Spreadsheets</strong>
+                                <p class="mb-0 text-muted">Index data from XLSX files across multiple sheets</p>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="bi bi-file-earmark-text text-secondary me-3" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>CSV Files</strong>
+                                <p class="mb-0 text-muted">Process comma-separated value files with tabular data</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Getting Started</h5>
-                <p>
-                    To begin using Semantic Document Search:
-                </p>
-                <ol>
-                    <li>Upload your documents using the <a href="{{ url_for('upload_file') }}">Upload</a> page</li>
-                    <li>Wait for the indexing process to complete</li>
-                    <li>Start searching with natural language on the <a href="{{ url_for('search') }}">Search</a> page</li>
-                </ol>
-                <p>
-                    You can also customize the search behavior on the <a href="{{ url_for('config') }}">Settings</a> page.
-                </p>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">Technology Stack</h3>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li><strong>Frontend</strong>: Flask, Bootstrap 5, HTML/CSS/JavaScript</li>
+                        <li><strong>Natural Language Processing</strong>: Sentence Transformers, HuggingFace</li>
+                        <li><strong>Vector Database</strong>: FAISS (Facebook AI Similarity Search)</li>
+                        <li><strong>Document Processing</strong>: PyPDF, docx, openpyxl, pandas</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

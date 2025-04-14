@@ -1,181 +1,108 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Configuration{% endblock %}
+{% block title %}Settings | Semantic Document Search{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <h1>Configuration</h1>
-        <p class="lead">Customize the search engine settings</p>
-        
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Settings</h5>
-                <form action="{{ url_for('config') }}" method="post">
-                    <div class="mb-3">
-                        <label for="data_dir" class="form-label">Data Directory</label>
-                        <input type="text" class="form-control" id="data_dir" name="data_dir" value="{{ config.data_dir }}">
-                        <div class="form-text">Directory where application data is stored</div>
-                    </div>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <h1 class="mb-4">Settings</h1>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Configuration</h5>
+                    <p class="card-text">
+                        Adjust settings for the semantic document search application.
+                    </p>
                     
-                    <div class="mb-3">
-                        <label for="vector_db_path" class="form-label">Vector Database Path</label>
-                        <input type="text" class="form-control" id="vector_db_path" name="vector_db_path" value="{{ config.vector_db_path }}">
-                        <div class="form-text">Path to the FAISS vector database</div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="embedding_model" class="form-label">Embedding Model</label>
-                        <select class="form-select" id="embedding_model" name="embedding_model">
-                            <option value="all-MiniLM-L6-v2" {% if config.embedding_model == 'all-MiniLM-L6-v2' %}selected{% endif %}>all-MiniLM-L6-v2 (Fast)</option>
-                            <option value="all-mpnet-base-v2" {% if config.embedding_model == 'all-mpnet-base-v2' %}selected{% endif %}>all-mpnet-base-v2 (Accurate)</option>
-                        </select>
-                        <div class="form-text">Model used for generating document embeddings</div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
+                    <form action="{{ url_for('config') }}" method="post" class="mt-3">
+                        <div class="mb-3">
+                            <label for="data_dir" class="form-label">Data Directory</label>
+                            <input type="text" class="form-control" id="data_dir" name="data_dir" 
+                                   value="{{ config.data_dir }}">
+                            <div class="form-text">
+                                Location where application data is stored
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="vector_db_path" class="form-label">Vector Database Path</label>
+                            <input type="text" class="form-control" id="vector_db_path" name="vector_db_path" 
+                                   value="{{ config.vector_db_path }}">
+                            <div class="form-text">
+                                Path to the vector database storage
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="embedding_model" class="form-label">Embedding Model</label>
+                            <select class="form-select" id="embedding_model" name="embedding_model">
+                                <option value="all-MiniLM-L6-v2" {% if config.embedding_model == 'all-MiniLM-L6-v2' %}selected{% endif %}>
+                                    all-MiniLM-L6-v2 (Default, Faster)
+                                </option>
+                                <option value="all-mpnet-base-v2" {% if config.embedding_model == 'all-mpnet-base-v2' %}selected{% endif %}>
+                                    all-mpnet-base-v2 (Higher Quality)
+                                </option>
+                                <option value="all-distilroberta-v1" {% if config.embedding_model == 'all-distilroberta-v1' %}selected{% endif %}>
+                                    all-distilroberta-v1 (Balanced)
+                                </option>
+                            </select>
+                            <div class="form-text">
+                                Model used for generating document embeddings
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
                                 <label for="chunk_size" class="form-label">Chunk Size</label>
-                                <input type="number" class="form-control" id="chunk_size" name="chunk_size" value="{{ config.chunk_size }}">
-                                <div class="form-text">Size of text chunks for indexing</div>
+                                <input type="number" class="form-control" id="chunk_size" name="chunk_size" 
+                                       value="{{ config.chunk_size }}" min="100" max="5000" step="100">
+                                <div class="form-text">
+                                    Size of text chunks (in characters)
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
+                            
+                            <div class="col-md-6 mb-3">
                                 <label for="chunk_overlap" class="form-label">Chunk Overlap</label>
-                                <input type="number" class="form-control" id="chunk_overlap" name="chunk_overlap" value="{{ config.chunk_overlap }}">
-                                <div class="form-text">Overlap between text chunks</div>
+                                <input type="number" class="form-control" id="chunk_overlap" name="chunk_overlap" 
+                                       value="{{ config.chunk_overlap }}" min="0" max="1000" step="50">
+                                <div class="form-text">
+                                    Overlap between chunks (in characters)
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="d-flex justify-content-between">
-                        <button type="submit" class="btn btn-primary">Save Settings</button>
-                        <button type="button" class="btn btn-outline-danger" id="resetBtn">Reset to Defaults</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-        <div class="card mt-4">
-            <div class="card-body">
-                <h5 class="card-title">Advanced Options</h5>
-                
-                <div class="mb-3">
-                    <button class="btn btn-warning" id="reindexBtn">Reindex All Documents</button>
-                    <div class="form-text">Force reindexing of all documents</div>
+                        
+                        <div class="d-flex mt-4">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="bi bi-save"></i> Save Settings
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" 
+                                    onclick="if(confirm('Reset to default settings?')) { window.location='{{ url_for('config') }}?reset=true'; }">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset to Defaults
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                
-                <div class="mb-3">
-                    <button class="btn btn-danger" id="clearIndexBtn">Clear Search Index</button>
-                    <div class="form-text">Delete all indexed documents (this cannot be undone)</div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Advanced Settings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" 
+                                onclick="alert('This would rebuild the entire search index')">
+                            <i class="bi bi-arrow-repeat"></i> Rebuild Search Index
+                        </button>
+                        <button class="btn btn-outline-danger" 
+                                onclick="alert('This would clear all indexed documents')">
+                            <i class="bi bi-trash"></i> Clear Search Index
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Confirmation Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalTitle">Confirm Action</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="confirmModalBody">
-                Are you sure you want to proceed?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmActionBtn">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const resetBtn = document.getElementById('resetBtn');
-        const reindexBtn = document.getElementById('reindexBtn');
-        const clearIndexBtn = document.getElementById('clearIndexBtn');
-        
-        const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-        const confirmModalTitle = document.getElementById('confirmModalTitle');
-        const confirmModalBody = document.getElementById('confirmModalBody');
-        const confirmActionBtn = document.getElementById('confirmActionBtn');
-        
-        resetBtn.addEventListener('click', function() {
-            confirmModalTitle.textContent = 'Reset Configuration';
-            confirmModalBody.textContent = 'Are you sure you want to reset all settings to their default values?';
-            
-            confirmActionBtn.onclick = function() {
-                // Submit form with reset=true
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '{{ url_for("config") }}';
-                
-                const resetInput = document.createElement('input');
-                resetInput.type = 'hidden';
-                resetInput.name = 'reset';
-                resetInput.value = 'true';
-                
-                form.appendChild(resetInput);
-                document.body.appendChild(form);
-                form.submit();
-            };
-            
-            confirmModal.show();
-        });
-        
-        reindexBtn.addEventListener('click', function() {
-            confirmModalTitle.textContent = 'Reindex All Documents';
-            confirmModalBody.textContent = 'Are you sure you want to reindex all documents? This may take some time.';
-            
-            confirmActionBtn.onclick = function() {
-                // Submit form with reindex=true
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '{{ url_for("config") }}';
-                
-                const reindexInput = document.createElement('input');
-                reindexInput.type = 'hidden';
-                reindexInput.name = 'reindex';
-                reindexInput.value = 'true';
-                
-                form.appendChild(reindexInput);
-                document.body.appendChild(form);
-                form.submit();
-            };
-            
-            confirmModal.show();
-        });
-        
-        clearIndexBtn.addEventListener('click', function() {
-            confirmModalTitle.textContent = 'Clear Search Index';
-            confirmModalBody.textContent = 'Are you sure you want to clear the entire search index? This action cannot be undone.';
-            
-            confirmActionBtn.onclick = function() {
-                // Submit form with clear_index=true
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '{{ url_for("config") }}';
-                
-                const clearIndexInput = document.createElement('input');
-                clearIndexInput.type = 'hidden';
-                clearIndexInput.name = 'clear_index';
-                clearIndexInput.value = 'true';
-                
-                form.appendChild(clearIndexInput);
-                document.body.appendChild(form);
-                form.submit();
-            };
-            
-            confirmModal.show();
-        });
-    });
-</script>
 {% endblock %}

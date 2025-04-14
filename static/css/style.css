@@ -1,198 +1,104 @@
-/* Main Styles for Semantic Document Search */
+/* Custom CSS for Semantic Document Search */
 
 :root {
-    --primary-color: #0078D4;
-    --secondary-color: #107C10;
-    --background-color: #F9F9F9;
-    --text-color: #323130;
-    --accent-color: #C4314B;
+    --primary: #0078D4;     /* Windows blue */
+    --secondary: #107C10;   /* Success green */
+    --background: #F9F9F9;  /* Light grey */
+    --text: #323130;        /* Dark grey */
+    --accent: #C4314B;      /* Attention red */
 }
 
 body {
     font-family: 'Segoe UI', 'Roboto', sans-serif;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.6;
+    color: var(--text);
+    background-color: var(--background);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Header and Navigation */
-.navbar {
-    background-color: var(--primary-color);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+.navbar-brand {
+    font-weight: 600;
 }
 
-.navbar-brand, .nav-link {
-    color: white !important;
-}
-
-.nav-link:hover {
-    opacity: 0.9;
+main {
+    flex: 1;
 }
 
 /* Buttons */
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--primary);
+    border-color: var(--primary);
 }
 
 .btn-primary:hover {
-    background-color: #005a9e;
-    border-color: #005a9e;
+    background-color: #0069c0;
+    border-color: #0069c0;
 }
 
 .btn-success {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--secondary);
+    border-color: var(--secondary);
 }
 
 .btn-success:hover {
-    background-color: #0b5a0b;
-    border-color: #0b5a0b;
+    background-color: #0e6a0e;
+    border-color: #0e6a0e;
 }
 
 .btn-danger {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
-}
-
-.btn-danger:hover {
-    background-color: #a12a3e;
-    border-color: #a12a3e;
+    background-color: var(--accent);
+    border-color: var(--accent);
 }
 
 /* Cards */
 .card {
-    border-radius: 8px;
-    border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.card-title {
-    color: var(--primary-color);
-    font-weight: 600;
+.card-header {
+    background-color: rgba(0, 120, 212, 0.05);
+    border-bottom: 1px solid rgba(0, 120, 212, 0.1);
 }
 
-.document-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    border-left: 4px solid var(--primary-color);
+/* Feature cards on homepage */
+.feature-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    background-color: var(--primary) !important;
 }
 
-.document-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+/* Search results */
+.search-match-preview {
+    margin-top: 0.5rem;
+    display: block;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    border-left: 3px solid var(--primary);
+    font-size: 0.9rem;
 }
 
-/* Search Input */
-.search-container {
-    margin: 30px auto;
-    max-width: 700px;
-}
-
-.search-input {
-    border-radius: 30px;
-    padding: 10px 20px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.search-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.2rem rgba(0,120,212,0.25);
-}
-
-/* Search Results */
-.result-item {
-    padding: 15px;
-    border-left: 4px solid var(--primary-color);
-    background-color: white;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.result-title {
-    color: var(--primary-color);
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
-.result-path {
-    color: #666;
-    font-size: 0.9em;
-}
-
-.result-preview {
-    margin-top: 10px;
-    font-size: 0.95em;
-}
-
-.match-percentage {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: 600;
-}
-
-/* File Upload */
-.upload-container {
-    border: 2px dashed #ddd;
-    border-radius: 8px;
-    padding: 30px;
-    text-align: center;
-    background-color: white;
-    transition: all 0.3s;
-}
-
-.upload-container:hover, .upload-container.dragover {
-    border-color: var(--primary-color);
-    background-color: rgba(0,120,212,0.05);
-}
-
-.upload-icon {
-    font-size: 48px;
-    color: var(--primary-color);
-    margin-bottom: 15px;
-}
-
-/* Configuration Page */
-.config-section {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-}
-
-.config-title {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    color: var(--primary-color);
+/* File upload */
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(0, 120, 212, 0.25);
 }
 
 /* Footer */
-footer {
-    background-color: #f8f9fa;
-    padding: 20px 0;
-    margin-top: 3rem;
-    color: #666;
-    font-size: 0.9em;
+.footer {
+    margin-top: auto;
 }
 
-/* Responsiveness */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .card-title {
-        font-size: 1.4rem;
+    .navbar-brand {
+        font-size: 1.1rem;
     }
     
     h1 {
-        font-size: 2rem;
-    }
-    
-    .lead {
-        font-size: 1.1rem;
+        font-size: 1.8rem;
     }
 }
