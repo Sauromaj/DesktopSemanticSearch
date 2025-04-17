@@ -10,6 +10,11 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
 import faiss
+import compat_hf
+import huggingface_hub
+
+# Inject the shim so other packages using huggingface_hub.cached_download won’t crash
+huggingface_hub.cached_download = compat_hf.cached_download
 from sentence_transformers import SentenceTransformer
 
 logger = logging.getLogger("semantic_search")
@@ -27,7 +32,9 @@ class VectorStore:
         os.makedirs(self.db_path, exist_ok=True)
         
         # Initialize the embedding model
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        local_model_path = "./all-MiniLM-L6-v2"
+
+        self.model = SentenceTransformer(local_model_path)
         self.embedding_dim = self.model.get_sentence_embedding_dimension()
         
         # Initialize FAISS index
@@ -40,6 +47,9 @@ class VectorStore:
     def is_initialized(self) -> bool:
         """Check if the vector store has been initialized with documents"""
         return self.index is not None and len(self.document_metadata) > 0
+    
+    def reload_index(self):
+        return self._load_index()
     
     def add_documents(self, documents: List[Dict[str, Any]]) -> None:
         """

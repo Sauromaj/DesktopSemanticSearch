@@ -40,7 +40,7 @@
                                 <th>Filename</th>
                                 <th>Size</th>
                                 <th>Last Modified</th>
-                                <th>Actions</th>
+                                <!-- <th>Actions</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -63,10 +63,10 @@
                                     <td>{{ file.size }}</td>
                                     <td>{{ file.last_modified|timestamp_to_date }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-primary" 
+                                        <!-- <button class="btn btn-sm btn-outline-primary" 
                                                 onclick="alert('Opening: {{ file.path }}')">
                                             <i class="bi bi-file-earmark"></i> Open
-                                        </button>
+                                        </button> -->
                                     </td>
                                 </tr>
                             {% endfor %}

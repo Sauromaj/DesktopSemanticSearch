@@ -1,6 +1,15 @@
 import os
 import logging
 from datetime import datetime
+from config import ApplicationConfig
+from ui_manager import UIManager
+from document_processor import DocumentProcessor
+from search_engine import SearchEngine
+from vector_store import VectorStore
+from pathlib import Path
+import shutil
+import platform
+import subprocess
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
@@ -65,11 +74,14 @@ app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
 
 # Configure uploads
 UPLOAD_FOLDER = 'uploads'
+DESKTOP_FOLDER = 'Desktop'
 ALLOWED_EXTENSIONS = {'pdf', 'docx', 'xlsx', 'csv'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['DESKTOP_FOLDER'] = DESKTOP_FOLDER
 
 # Create upload directory if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 
 # Define template filters
 @app.template_filter('timestamp_to_date')
@@ -125,6 +137,25 @@ def format_file_size(size_bytes):
         return f"{size_bytes / (1024 * 1024):.1f} MB"
     else:
         return f"{size_bytes / (1024 * 1024 * 1024):.1f} GB"
+    
+# Initialize the document processor and search engine
+config_setup = ApplicationConfig()
+ui_manager_setup = UIManager()
+doc_processor = DocumentProcessor(config_setup, ui_manager_setup)
+
+vector_store_setup = VectorStore(config_setup.DEFAULTS['vector_db_path'])
+search_engine = SearchEngine(vector_store_setup, ui_manager_setup, config_setup)
+
+# # Loop through the uploads folder and call the remove_document function for each file
+# for filename in os.listdir(app.config['UPLOAD_FOLDER']):
+#     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+#     if os.path.isfile(file_path):
+#         vector_store_setup.remove_document(file_path)
+#         logger.info(f"Removed document from vector store: {file_path}")
+
+# # Reload any documents in uploads currently
+# upload_folder_path = Path(os.path.join(app.config['UPLOAD_FOLDER']))
+# doc_processor.index_directory(upload_folder_path, force = True)
 
 @app.route('/')
 def index():
@@ -160,8 +191,13 @@ def upload_file():
         if success_count > 0:
             flash(f'Successfully uploaded {success_count} file(s)')
             # In a real app, we would call the document processor to index the files here
-        
+            upload_folder_path = Path(os.path.join(app.config['UPLOAD_FOLDER']))
+            doc_processor.index_directory(upload_folder_path)
+            vector_store_setup.reload_index()
+
         return redirect(url_for('upload_file'))
+            
+        
     
     # List already uploaded files
     uploaded_files = []
@@ -187,7 +223,7 @@ def search():
     if query:
         # In a real app, we would call the search engine here
         # For now, we'll return sample data
-        results = sample_documents
+        results = search_engine.search(query)
     
     return render_template('search.html', query=query, results=results)
 
@@ -210,10 +246,94 @@ def config():
     
     return render_template('config.html', config=config_settings)
 
+@app.route('/reindex', methods=['GET'])
+def reindex():
+    
+    upload_folder_path = Path(os.path.join(os.path.expanduser("~"), app.config['DESKTOP_FOLDER']))
+    logger.info(f"Reindexing main folder: {upload_folder_path}")
+
+    # Index the main desktop folder
+    ret_val = doc_processor.index_directory(upload_folder_path)
+    if not ret_val:
+        flash(f"Some error occurred while reindexing folder: {upload_folder_path}")
+    else:
+        # Recursively reindex all subfolders within the desktop folder
+        for subfolder in upload_folder_path.rglob('*'):
+            if subfolder.is_dir():
+                logger.info(f"Reindexing subfolder: {subfolder}")
+                ret_val = doc_processor.index_directory(subfolder)
+
+                if not ret_val:
+                    flash(f"Some error occurred while reindexing subfolder: {subfolder}")
+                    break
+
+    vector_store_setup.reload_index()
+    flash("All files and subfolders reindexed successfully")
+
+    return render_template('index.html')
+
 @app.route('/about')
 def about():
     """About page"""
     return render_template('about.html')
+
+@app.route('/handle-file', methods=['POST'])
+def open_file():
+    """Handle file opening requests from the frontend."""
+    try:
+        # Parse the JSON data from the request
+        data = request.get_json()
+        logger.info(f"Received data: {data}")  # Log the received data
+
+        file_path = data.get('path')
+        if not file_path or not os.path.exists(file_path):
+            logger.error(f"File not found: {file_path}")
+            return jsonify({'error': 'File not found'}), 404
+
+        # Open the file using the system's default application
+        if platform.system() == 'Windows':
+            os.startfile(file_path)
+        elif platform.system() == 'Darwin':  # macOS
+            subprocess.run(['open', file_path], check=True)
+        else:  # Linux
+            subprocess.run(['xdg-open', file_path], check=True)
+
+        logger.info(f"File opened successfully: {file_path}")
+        return jsonify({'message': 'File opened successfully'}), 200
+
+    except Exception as e:
+        logger.error(f"Error opening file: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    
+
+@app.route('/handle-folder', methods=['POST'])
+def open_folder():
+
+    try:
+        # Parse the JSON data from the request
+        data = request.get_json()
+        logger.info(f"Received data: {data}")  # Log the received data
+
+        file_path = data.get('path')
+        if not file_path or not os.path.exists(file_path):
+            logger.error(f"File not found: {file_path}")
+            return jsonify({'error': 'File not found'}), 404
+
+        # Get the folder containing the file and open it using the system's default file explorer
+        folder_path = os.path.dirname(file_path)
+        if platform.system() == 'Windows':
+            os.startfile(folder_path)
+        elif platform.system() == 'Darwin':  # macOS
+            subprocess.run(['open', folder_path], check=True)
+        else:  # Linux
+            subprocess.run(['xdg-open', folder_path], check=True)
+
+        logger.info(f"Folder opened successfully: {folder_path}")
+        return jsonify({'message': 'Folder opened successfully'}), 200
+
+    except Exception as e:
+        logger.error(f"Folder opening file: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

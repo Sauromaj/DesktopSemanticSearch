@@ -54,6 +54,8 @@ class DocumentProcessor:
         """
         # Get list of files to index
         files_to_index = self._get_indexable_files(directory_path)
+
+        files_to_index = [ Path(os.path.abspath(f)) for f in files_to_index]
         
         if not files_to_index:
             self.ui_manager.display_warning(f"No supported documents found in {directory_path}")
@@ -68,13 +70,13 @@ class DocumentProcessor:
         if not files_to_index:
             self.ui_manager.display_message("All documents are already indexed and up to date")
             return True
-            
+        
         # Index the files
         total_files = len(files_to_index)
         self.ui_manager.display_message(f"Indexing {total_files} documents...")
         
         processed_documents = []
-        
+        logger.info("Starting indexing ...")
         # Setup progress bar
         with Progress(
             TextColumn("[bold blue]{task.description}"),
@@ -127,19 +129,31 @@ class DocumentProcessor:
     def _needs_indexing(self, file_path: Path, index_metadata: Dict[str, Dict[str, Any]]) -> bool:
         """Check if a file needs to be indexed based on modification time and hash"""
         file_str = str(file_path)
+
+        from vector_store import VectorStore
+        vector_store = VectorStore(self.config.vector_db_path)
         
         # If file is not in metadata, it needs indexing
         if file_str not in index_metadata:
+            logging.info(file_str)
+            logging.info(index_metadata)
+            logger.info("File not in metadata needs indexing...")
             return True
             
         # Check if file has been modified since last indexing
         last_modified = file_path.stat().st_mtime
         if last_modified > index_metadata[file_str].get('last_indexed', 0):
+            logger.info("File has been modified needs indexing...")
+            vector_store.remove_document(file_path)
+            vector_store.reload_index()
             return True
             
         # Check if content has changed using hash
         current_hash = self._get_file_hash(file_path)
         if current_hash != index_metadata[file_str].get('hash', ''):
+            logger.info("File contents have changed needs indexing...")
+            vector_store.remove_document(file_path)
+            vector_store.reload_index()
             return True
             
         return False

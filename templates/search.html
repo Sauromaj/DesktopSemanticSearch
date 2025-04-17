@@ -58,17 +58,63 @@
                                             <span class="ms-3"><i class="bi bi-hdd me-1"></i> {{ result.size|filesizeformat }}</span>
                                         </small>
                                         <span class="search-match-preview">{{ result.content_preview }}</span>
+                                        <small class="text-muted d-block mt-2">
+                                            <i class="bi bi-file-earmark me-1"></i> {{ result.path }}
+                                        </small>
                                     </p>
                                 </div>
                                 <div class="d-flex mt-2">
+                                    <!-- Open File Button -->
                                     <button class="btn btn-sm btn-outline-primary me-2" 
-                                            onclick="alert('Opening: {{ result.path }}')">
+                                            onclick="handleFile('{{ result.path|replace('\\', '/') }}')">
                                         <i class="bi bi-file-earmark"></i> Open
                                     </button>
+                                    <script>
+                                        function handleFile(filePath) {
+                                            fetch('/handle-file', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({ path: filePath }),
+                                            })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    console.error('Failed to send file path to server.');
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                alert('An error occurred while sending the file path.');
+                                            });
+                                        }
+                                    </script>
+                                
+                                    <!-- Show in Folder Button -->
                                     <button class="btn btn-sm btn-outline-secondary" 
-                                            onclick="alert('Opening folder for: {{ result.path }}')">
+                                            onclick="handleFolder('{{ result.path|replace('\\', '/') }}')">
                                         <i class="bi bi-folder2-open"></i> Show in folder
                                     </button>
+                                    <script>
+                                        function handleFolder(filePath) {
+                                            fetch('/handle-folder', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({ path: filePath }),
+                                            })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    console.error('Failed to send file path to server.');
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                alert('An error occurred while sending the folder path.');
+                                            });
+                                        }
+                                    </script>
                                 </div>
                             </div>
                         {% endfor %}
@@ -99,6 +145,35 @@
         border-radius: 5px;
         border-left: 3px solid #0078D4;
         font-size: 0.9rem;
+        word-wrap: break-word; /* Ensures long words wrap */
+        overflow-wrap: break-word; /* Ensures text doesn't overflow */
+        white-space: pre-wrap; /* Preserves whitespace and wraps text */
+    }
+
+    .list-group-item {
+        word-wrap: break-word; /* Ensures text wraps within the box */
+        overflow-wrap: break-word; /* Prevents text overflow */
+        white-space: normal; /* Allows text to wrap */
+    }
+
+    .list-group-item h5 {
+        white-space: normal; /* Allows text to wrap in the title */
+        overflow: hidden; /* Prevents content from overflowing */
+        text-overflow: ellipsis; /* Adds ellipsis for long text */
+    }
+
+    .list-group-item p {
+        white-space: normal; /* Ensures paragraph text wraps */
+        overflow: hidden; /* Prevents overflow */
+        text-overflow: ellipsis; /* Adds ellipsis for long text */
+    }
+
+    .list-group-item .badge {
+        flex-shrink: 0; /* Prevents the badge from shrinking */
+    }
+
+    .d-flex {
+        flex-wrap: wrap; /* Ensures child elements wrap if they overflow */
     }
 </style>
 {% endblock %}
